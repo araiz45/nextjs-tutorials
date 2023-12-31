@@ -20,14 +20,14 @@ const Register = () => {
     fd.append("name", name);
     fd.append("email", email);
     fd.append("password", password);
-
     fd.append("img", pic);
     try {
-      const response = await fetch("/api/user/", {
+      const respnose = await fetch("/api/user/", {
         method: "POST",
         body: fd,
       });
-      console.log(response);
+      // Q. How can i get the response from the server and decode it?
+      console.log(respnose);
     } catch (error) {}
   };
   const VisuallyHiddenInput = styled("input")({
