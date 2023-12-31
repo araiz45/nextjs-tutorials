@@ -3,8 +3,33 @@ import { Box, Button, TextField } from "@mui/material";
 import Link from "next/link";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
+import { useState } from "react";
+import axios from "axios";
+import React from "react";
 
-export default function Register() {
+const Register = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [pic, setPic] = useState<File | null>();
+  const sendData = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(name, email, password, confirmPassword, pic);
+    const fd = new FormData();
+    fd.append("name", name);
+    fd.append("email", email);
+    fd.append("password", password);
+
+    fd.append("img", pic);
+    try {
+      const response = await fetch("/api/user/", {
+        method: "POST",
+        body: fd,
+      });
+      console.log(response);
+    } catch (error) {}
+  };
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -32,7 +57,9 @@ export default function Register() {
         alignItems={"center"}
         gap={".8rem"}
         borderRadius={"1rem"}
+        component={"form"}
         boxShadow={"5px 5px 10px #888888"}
+        onSubmit={sendData}
       >
         <Box component={"h3"} fontSize={"1.3rem"} color={"#2196f3"}>
           Register
@@ -43,6 +70,7 @@ export default function Register() {
           sx={{
             width: "20rem",
           }}
+          onChange={(ev) => setName(ev.target.value)}
         />
         <TextField
           variant="standard"
@@ -51,6 +79,7 @@ export default function Register() {
           sx={{
             width: "20rem",
           }}
+          onChange={(ev) => setEmail(ev.target.value)}
         />
         <TextField
           type="password"
@@ -59,6 +88,7 @@ export default function Register() {
           sx={{
             width: "20rem",
           }}
+          onChange={(ev) => setPassword(ev.target.value)}
         />
         <TextField
           type="password"
@@ -67,6 +97,7 @@ export default function Register() {
           sx={{
             width: "20rem",
           }}
+          onChange={(ev) => setConfirmPassword(ev.target.value)}
         />
 
         <Button
@@ -76,9 +107,16 @@ export default function Register() {
           sx={{ marginTop: ".7rem" }}
         >
           Upload Profile Photo
-          <VisuallyHiddenInput type="file" />
+          <VisuallyHiddenInput
+            type="file"
+            onChange={(ev) => {
+              if (ev.target.files) {
+                setPic(ev.target.files[0]);
+              }
+            }}
+          />
         </Button>
-        <Button variant="contained" sx={{ marginTop: "1rem" }}>
+        <Button variant="contained" sx={{ marginTop: "1rem" }} type="submit">
           Register
         </Button>
         <Box component={"p"} fontSize={"small"}>
@@ -87,4 +125,6 @@ export default function Register() {
       </Box>
     </Box>
   );
-}
+};
+
+export default Register;

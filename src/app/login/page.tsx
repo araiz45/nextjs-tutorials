@@ -1,7 +1,7 @@
 import { Box, Button, TextField } from "@mui/material";
 import Link from "next/link";
 
-export default function Login() {
+const Login: React.FC = () => {
   return (
     <Box
       minHeight={"100vh"}
@@ -47,4 +47,6 @@ export default function Login() {
       </Box>
     </Box>
   );
-}
+};
+
+export default Login;
