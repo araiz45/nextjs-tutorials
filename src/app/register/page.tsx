@@ -3,33 +3,59 @@ import { Box, Button, TextField } from "@mui/material";
 import Link from "next/link";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
-import { useState } from "react";
-import axios from "axios";
+import { useEffect, useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React from "react";
+import { useCookies } from "next-client-cookies";
+import { redirect } from "next/navigation";
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const cookies = useCookies();
+  const [name, setName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [pic, setPic] = useState<File | null>();
+  const [redirectUrl, setRedirectUrl] = useState<boolean>(false);
+
   const sendData = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(name, email, password, confirmPassword, pic);
-    const fd = new FormData();
-    fd.append("name", name);
-    fd.append("email", email);
-    fd.append("password", password);
-    fd.append("img", pic);
-    try {
-      const respnose = await fetch("/api/user/", {
-        method: "POST",
-        body: fd,
-      });
-      // Q. How can i get the response from the server and decode it?
-      console.log(respnose);
-    } catch (error) {}
+    if (password === confirmPassword) {
+      const fd = new FormData();
+      fd.append("name", name);
+      fd.append("email", email);
+      fd.append("password", password);
+      fd.append("img", pic);
+      try {
+        fetch("/api/user/", {
+          method: "POST",
+          body: fd,
+        })
+          .then((res) => {
+            res.json();
+            if (res.status === 400) toast.error("User already created");
+            if (res.status === 201)
+              toast.success("Your account has been created");
+          })
+          .then((data) => {
+            data;
+            setRedirectUrl(true);
+          });
+        // Q. How can i get the response from the server and decode it?
+      } catch (error) {
+        toast.error("Something went wrong");
+      }
+    } else {
+      toast.error("Password is mismatch ");
+    }
   };
+
+  if (cookies.get("HumanCivilzation") || redirectUrl) {
+    return redirect("/home");
+  }
+
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -49,6 +75,18 @@ const Register = () => {
       justifyContent={"center"}
       alignItems={"center"}
     >
+      <ToastContainer
+        position="bottom-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <Box
         bgcolor={"white"}
         display={"flex"}
