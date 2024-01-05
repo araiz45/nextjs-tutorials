@@ -2,11 +2,11 @@
 import * as React from "react";
 import BottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
-import RestoreIcon from "@mui/icons-material/Restore";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ArchiveIcon from "@mui/icons-material/Archive";
 import Paper from "@mui/material/Paper";
+import { Home, Pages, Person, PostAdd } from "@mui/icons-material";
+import { useRouter } from "next/navigation";
 const BottomNavigationComponent = () => {
+  const router = useRouter();
   const [value, setValue] = React.useState(0);
   return (
     <Paper
@@ -29,11 +29,26 @@ const BottomNavigationComponent = () => {
           boxShadow: "-1px -.5px 3px #464545",
         }}
       >
-        <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-        <BottomNavigationAction label="Favorites" icon={<FavoriteIcon />} />
-        <BottomNavigationAction label="Archive" icon={<ArchiveIcon />} />
-        <BottomNavigationAction label="Archive" icon={<ArchiveIcon />} />
-        <BottomNavigationAction label="Archive" icon={<ArchiveIcon />} />
+        <BottomNavigationAction
+          label="Home"
+          icon={<Home />}
+          onClick={() => router.push("/home")}
+        />
+        <BottomNavigationAction
+          label="Create Post"
+          icon={<PostAdd />}
+          onClick={() => router.push("/home/create-post")}
+        />
+        <BottomNavigationAction
+          label="Posts"
+          icon={<Pages />}
+          onClick={() => router.push("/home/posts")}
+        />
+        <BottomNavigationAction
+          label="Profile"
+          icon={<Person />}
+          onClick={() => router.push("/home/profile")}
+        />
       </BottomNavigation>
     </Paper>
   );

@@ -54,6 +54,13 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function GET(req: NextRequest) {
+  const cookieStore = cookies();
+  const getCookie = cookieStore.get(process.env.TokenName);
+  const data = await jwt.verify(getCookie.value, process.env.PrivateKey);
+  return NextResponse.json(data);
+}
+
 async function insertingImage(formImg): Promise<string> {
   let filename: string;
   if (formImg instanceof File) {
